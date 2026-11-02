@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Login')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main><div class="card form-box">
+  <h2>Login</h2>
+  <div class="err" th:if="${param.error}">Invalid email or password.</div>
+  <div class="ok" th:if="${param.registered}">Registered! Please log in.</div>
+  <form th:action="@{/login}" method="post">
+    <label>Email</label><input type="email" name="username" required>
+    <label>Password</label><input type="password" name="password" required>
+    <button class="btn" type="submit">Login</button>
+  </form>
+</div></main>
+</body>
+</html>

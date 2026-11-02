@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Checkout')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main><div class="card form-box">
+  <h2>Checkout</h2>
+  <p>Items: <span th:text="${lines.size()}"></span> &nbsp; Total: <b>₹<span th:text="${total}"></span></b></p>
+  <form th:action="@{/checkout}" method="post">
+    <label>Payment method</label>
+    <select name="method">
+      <option value="UPI">UPI</option>
+      <option value="CARD">Credit / Debit card</option>
+      <option value="COD">Cash on delivery</option>
+    </select>
+    <button class="btn" type="submit">Pay now</button>
+  </form>
+  <p class="muted">Demo mode: payments are simulated by MockPaymentGateway.</p>
+</div></main>
+</body>
+</html>

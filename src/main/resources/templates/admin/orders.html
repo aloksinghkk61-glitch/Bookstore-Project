@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('All Orders')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+  <h2>All orders</h2>
+  <table>
+    <tr><th>#</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th>Transaction</th></tr>
+    <tr th:each="o : ${orders}">
+      <td th:text="${o.id}"></td>
+      <td th:text="${o.user.email}"></td>
+      <td th:text="${#temporals.format(o.createdAt,'dd MMM yyyy HH:mm')}"></td>
+      <td th:text="${o.total}"></td>
+      <td th:text="${o.status}"></td>
+      <td th:text="${o.payment.transactionId}"></td>
+    </tr>
+  </table>
+</main>
+</body>
+</html>

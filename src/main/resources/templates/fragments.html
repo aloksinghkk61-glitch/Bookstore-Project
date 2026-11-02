@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6">
+<head th:fragment="head(title)">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${title} + ' | BookNest'">BookNest</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav th:fragment="nav">
+  <a class="brand" th:href="@{/}">📚 BookNest</a>
+  <a th:href="@{/books}">Books</a>
+  <a th:href="@{/cart}">Cart</a>
+  <span sec:authorize="isAuthenticated()"><a th:href="@{/orders}">My Orders</a></span>
+  <span sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/books}">Admin: Books</a> &nbsp; <a th:href="@{/admin/orders}">Admin: Orders</a></span>
+  <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Login</a>
+  <a sec:authorize="!isAuthenticated()" th:href="@{/register}">Register</a>
+  <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post">
+    <button type="submit">Logout (<span sec:authentication="name"></span>)</button>
+  </form>
+</nav>
+</body>
+</html>

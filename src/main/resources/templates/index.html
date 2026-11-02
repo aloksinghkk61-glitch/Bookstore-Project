@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Books')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+  <form th:action="@{/books}" method="get" class="inline" style="margin-bottom:20px">
+    <input type="text" name="q" th:value="${q}" placeholder="Search by title, author or category...">
+    <button class="btn" type="submit">Search</button>
+  </form>
+  <p th:if="${books.isEmpty()}" class="muted">No books found.</p>
+  <div class="grid">
+    <div class="card" th:each="b : ${books}">
+      <h3 th:text="${b.title}">Title</h3>
+      <div class="muted" th:text="${b.author} + ' · ' + ${b.category}">Author</div>
+      <p class="muted" th:text="${b.description}"></p>
+      <div class="price">₹<span th:text="${b.price}">0</span></div>
+      <form th:if="${b.stock > 0}" th:action="@{/cart/add/{id}(id=${b.id})}" method="post">
+        <button class="btn" type="submit">Add to cart</button>
+      </form>
+      <span th:unless="${b.stock > 0}" class="error">Out of stock</span>
+    </div>
+  </div>
+</main>
+</body>
+</html>

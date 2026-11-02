@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Cart')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+  <h2>Your cart</h2>
+  <div class="err" th:if="${error}" th:text="${error}"></div>
+  <p th:if="${lines.isEmpty()}" class="muted">Your cart is empty. <a th:href="@{/books}">Browse books</a></p>
+  <table th:unless="${lines.isEmpty()}">
+    <tr><th>Book</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+    <tr th:each="l : ${lines}">
+      <td th:text="${l.book.title}"></td>
+      <td th:text="${l.quantity}"></td>
+      <td>₹<span th:text="${l.subtotal}"></span></td>
+      <td><form th:action="@{/cart/remove/{id}(id=${l.book.id})}" method="post"><button class="btn alt">Remove</button></form></td>
+    </tr>
+    <tr><td colspan="2"><b>Total</b></td><td colspan="2"><b>₹<span th:text="${total}"></span></b></td></tr>
+  </table>
+  <p th:unless="${lines.isEmpty()}"><a class="btn" th:href="@{/checkout}">Proceed to checkout</a></p>
+</main>
+</body>
+</html>

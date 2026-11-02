@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('My Orders')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+  <h2>My orders</h2>
+  <div class="ok" th:if="${msg}" th:text="${msg}"></div>
+  <p th:if="${orders.isEmpty()}" class="muted">No orders yet.</p>
+  <div class="card" th:each="o : ${orders}" style="margin-bottom:12px">
+    <b>Order #<span th:text="${o.id}"></span></b> · <span th:text="${#temporals.format(o.createdAt,'dd MMM yyyy HH:mm')}"></span>
+    · <span th:text="${o.status}"></span><br>
+    <span class="muted" th:text="'Payment: ' + ${o.payment.method} + ' / ' + ${o.payment.transactionId}"></span>
+    <ul><li th:each="i : ${o.items}" th:text="${i.book.title} + ' × ' + ${i.quantity} + ' — ₹' + ${i.unitPrice}"></li></ul>
+    <b>Total: ₹<span th:text="${o.total}"></span></b>
+  </div>
+</main>
+</body>
+</html>

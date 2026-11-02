@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Manage Books')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<main>
+  <h2>Manage books</h2>
+  <div class="card" style="margin-bottom:20px">
+    <h3>Add a book</h3>
+    <form th:action="@{/admin/books}" th:object="${book}" method="post">
+      <input th:field="*{title}" placeholder="Title"><div class="error" th:errors="*{title}"></div>
+      <input th:field="*{author}" placeholder="Author"><div class="error" th:errors="*{author}"></div>
+      <input th:field="*{category}" placeholder="Category">
+      <input th:field="*{price}" placeholder="Price"><div class="error" th:errors="*{price}"></div>
+      <input th:field="*{stock}" placeholder="Stock">
+      <input th:field="*{description}" placeholder="Description">
+      <button class="btn" type="submit">Add book</button>
+    </form>
+  </div>
+  <table>
+    <tr><th>Title</th><th>Author</th><th>Price</th><th>Stock</th></tr>
+    <tr th:each="b : ${books}">
+      <td th:text="${b.title}"></td><td th:text="${b.author}"></td><td th:text="${b.price}"></td>
+      <td>
+        <form th:action="@{/admin/books/{id}/stock(id=${b.id})}" method="post" class="inline">
+          <input type="number" name="stock" th:value="${b.stock}" style="width:80px">
+          <button class="btn alt">Update</button>
+        </form>
+      </td>
+    </tr>
+  </table>
+</main>
+</body>
+</html>
