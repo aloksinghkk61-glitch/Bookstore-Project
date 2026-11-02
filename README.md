@@ -1,53 +1,46 @@
 # BookNest – Online Bookstore (Spring Boot + MySQL + Thymeleaf)
 
-## Features
-- Registration / login (Spring Security, BCrypt), roles USER and ADMIN
-- Search books by title, author, category
-- Session-based cart, checkout, order history
-- Payments recorded per order (pluggable `PaymentGateway`, mock included)
-- Admin: add books, update stock, view all orders
+## Run locally (2 minutes)
+Needs Java 17+ and Maven (or open the folder in IntelliJ / Eclipse / VS Code and run `BookstoreApplication`).
 
-## Run locally
-**Option A: no database needed (H2 in memory)**
-    mvn spring-boot:run -Dspring-boot.run.profiles=h2
-
-**Option B: MySQL**
-    mysql -u root -p -e "CREATE DATABASE bookstore"
-    # edit DB_USER / DB_PASSWORD env vars or application.properties
+    cd bookstore          # the folder that contains pom.xml
     mvn spring-boot:run
 
-Open http://localhost:8080
-Admin login: admin@bookstore.com / admin123  (change via ADMIN_EMAIL / ADMIN_PASSWORD env vars)
+Wait for the line `Started BookstoreApplication`, then open **http://localhost:8080/**
+Admin: admin@bookstore.com / admin123
 
-## Environment variables
-| Variable | Meaning |
-|---|---|
-| DB_URL | jdbc:mysql://HOST:PORT/DBNAME |
-| DB_USER / DB_PASSWORD | database credentials |
-| ADMIN_EMAIL / ADMIN_PASSWORD | seeded admin account |
-| PORT | set automatically by most hosts |
+With no configuration it uses an in-memory H2 database (data resets on restart).
+To use MySQL, create a database and set environment variables:
 
-## Deploy on Railway (easiest, app + MySQL in one place)
-1. Push this folder to a GitHub repo.
-2. railway.app -> New Project -> Deploy from GitHub repo (it detects the Dockerfile).
-3. In the same project: + New -> Database -> MySQL.
-4. Open your app service -> Variables and add:
-   - DB_URL  = jdbc:mysql://${{MySQL.MYSQLHOST}}:${{MySQL.MYSQLPORT}}/${{MySQL.MYSQLDATABASE}}
-   - DB_USER = ${{MySQL.MYSQLUSER}}
-   - DB_PASSWORD = ${{MySQL.MYSQLPASSWORD}}
-   - ADMIN_PASSWORD = (a strong password)
-5. Settings -> Networking -> Generate Domain. Done.
+    DB_URL=jdbc:mysql://localhost:3306/bookstore?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    DB_USER=root
+    DB_PASSWORD=yourpassword
+
+## Pages
+/ , /books?q=java (search) · /register · /login · /cart · /checkout · /orders · /admin/books · /admin/orders
+
+## Deploy on Railway (app + MySQL)
+1. Push this folder to GitHub. Railway -> New Project -> Deploy from GitHub (uses the Dockerfile).
+2. In the project: + New -> Database -> MySQL.
+3. App service -> Variables:
+   DB_URL = jdbc:mysql://${{MySQL.MYSQLHOST}}:${{MySQL.MYSQLPORT}}/${{MySQL.MYSQLDATABASE}}?useSSL=false&allowPublicKeyRetrieval=true
+   DB_USER = ${{MySQL.MYSQLUSER}}
+   DB_PASSWORD = ${{MySQL.MYSQLPASSWORD}}
+   ADMIN_PASSWORD = a-strong-password
+4. Settings -> Networking -> Generate Domain.
 
 ## Deploy on Render
-1. Render -> New -> Web Service -> connect the repo, Runtime = Docker.
-2. Render has no free MySQL, so create a MySQL database on Aiven, Railway or PlanetScale-compatible host,
-   then set DB_URL, DB_USER, DB_PASSWORD in the service's Environment tab.
+New -> Web Service -> Docker. Add DB_URL / DB_USER / DB_PASSWORD from any MySQL host (Aiven, Railway).
+Without DB_URL it still runs, but on H2 (data lost on restart).
 
-## Real payments (Razorpay / Stripe)
-Create a class implementing `PaymentGateway`, call the provider API in `charge()`, and delete `MockPaymentGateway`.
-For card/UPI, verify the payment signature on the server before returning `success=true`.
+NOTE: this is a Java server app. It will NOT work on static or PHP hosting
+(GitHub Pages, Netlify, InfinityFree, cPanel shared hosting) - those show 404.
 
-## Production checklist
-- Change the default admin password
-- Set `spring.jpa.hibernate.ddl-auto=validate` and use Flyway migrations
-- Never store card numbers; let the payment provider handle card data
+## Troubleshooting 404
+- Use http://localhost:8080/ (not /index.html).
+- Run `mvn` from the folder containing pom.xml.
+- Port busy? run `mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=9090`
+- Deployed 404 "application not found": open Deploy Logs, the app crashed on startup.
+
+## Real payments
+Implement `PaymentGateway` (Razorpay/Stripe) and delete `MockPaymentGateway`.

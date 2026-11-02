@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Error</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body>
+<main><div class="card form-box">
+  <h2>Oops - <span th:text="${status}">404</span></h2>
+  <p>Page: <code th:text="${path}"></code></p>
+  <p class="muted">The page doesn't exist or you don't have access.</p>
+  <a class="btn" th:href="@{/}">Back to home</a>
+</div></main>
+</body>
+</html>
